@@ -1,2 +1,2 @@
-# -ompetitive_search_Tg-bot
+# Competitive_search_Tg-bot
 Pet-project
