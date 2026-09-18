@@ -1,36 +1,39 @@
-import os
-from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher
+from os import getenv
 import asyncio
-import re
+import logging
+import sys
+
+from dotenv import load_dotenv
+from aiogram import Bot, Dispatcher, html
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.types import Message
+from aiogram.filters import CommandStart
+
 
 
 load_dotenv()
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 
-bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-def clear_input() -> dict[str] | None:
-    raw_input: str = input()
 
-    normalized_input: str = re.sub(r"[.,;|+]", " ", raw_input)
-    raw_words = normalized_input.split()
-
-    clean_words = [
-        word.strip().lower() 
-        for word in raw_words 
-        if len(word.strip()) > 1
-    ]
-
-    return clean_words
-
-async def main():
-    search_input = clear_input()
-    if search_input == None:
-        return "Неверный ввод"
-    else:
-        return "Начинаю следующий шаг"
+@dp.message(CommandStart())
+async def command_start_handler(message: Message) -> None:
+    await message.answer(
+        f"Hello, {html.mono(message.from_user.full_name)}!"
+    )
 
 
-asyncio.run(main())
+async def main() -> None:
+    bot = Bot(
+        token=TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
+
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())
