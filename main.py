@@ -1,4 +1,15 @@
+import os
+from dotenv import load_dotenv
+from aiogram import Bot, Dispatcher
+import asyncio
 import re
+
+
+load_dotenv()
+TOKEN = os.getenv("BOT_TOKEN")
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
 
 def clear_input() -> dict[str] | None:
     raw_input: str = input()
@@ -14,7 +25,7 @@ def clear_input() -> dict[str] | None:
 
     return clean_words
 
-def main():
+async def main():
     search_input = clear_input()
     if search_input == None:
         return "Неверный ввод"
@@ -22,5 +33,4 @@ def main():
         return "Начинаю следующий шаг"
 
 
-if __name__ == "__main__":
-    main()
+asyncio.run(main())
