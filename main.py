@@ -9,7 +9,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import Message
 from aiogram.filters import CommandStart
-
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
 
 
 load_dotenv()
@@ -23,6 +24,31 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(
         f"Hello, {html.mono(message.from_user.full_name)}!"
     )
+
+
+class SearchStates(StatesGroup):
+    wating_for_query: State = State()
+
+
+@dp.message()
+async def start_search(message: Message, state: FSMContext) -> None:
+    await message.answer("Enter your query:")
+    await state.set_state(SearchStates.wating_for_query)
+
+
+@dp.message(SearchStates.waiting_for_query)
+async def process_search_query(message: Message, state: FSMContext) -> None:
+    query: str = message.text
+
+    # Код поиска
+    await message.answer(f"Searching: {query}")
+
+    await state.clear()
+
+
+dp.message()
+async def echo(message: Message) -> None:
+    await message.answer("Send /search for searching")
 
 
 async def main() -> None:
