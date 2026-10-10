@@ -27,13 +27,13 @@ async def command_start_handler(message: Message) -> None:
 
 
 class SearchStates(StatesGroup):
-    wating_for_query: State = State()
+    waiting_for_query: State = State()
 
 
 @dp.message()
 async def start_search(message: Message, state: FSMContext) -> None:
     await message.answer("Enter your query:")
-    await state.set_state(SearchStates.wating_for_query)
+    await state.set_state(SearchStates.waiting_for_query)
 
 
 @dp.message(SearchStates.waiting_for_query)
@@ -46,7 +46,7 @@ async def process_search_query(message: Message, state: FSMContext) -> None:
     await state.clear()
 
 
-dp.message()
+@dp.message()
 async def echo(message: Message) -> None:
     await message.answer("Send /search for searching")
 
